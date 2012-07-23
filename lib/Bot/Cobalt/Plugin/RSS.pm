@@ -1,7 +1,7 @@
 package Bot::Cobalt::Plugin::RSS;
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
-use 5.10.1;
+use 5.12.1;
 
 use Bot::Cobalt;
 use Bot::Cobalt::Common;
@@ -25,7 +25,6 @@ sub new {
   bless $self, $class;  
   return $self
 }
-
 
 sub pending {  $_[0]->{HEAP}->{POOL} }
 
@@ -139,7 +138,7 @@ sub Cobalt_register {
         my $thiscont = $annto->{$context};
         unless (ref $thiscont eq 'ARRAY') {
           logger->warn(
-            "Configured AnnounceTo directive not a list.",
+            "Configured AnnounceTo directive for $context not a list.",
             "Check your configuration."
           );
           next CONTEXT
@@ -235,7 +234,8 @@ sub Bot_rssplug_got_resp {
                    || return PLUGIN_EAT_NONE;
     my $handler  = $feedmeta->{obj};
     
-    if ( $handler->parse($response->content) ) {
+    local $SIG{__WARN__} = sub {};
+    if ( eval { $handler->parse($response->content); 1 } ) {
       $self->_send_announce($feedname, $handler);
     }
   } else {
@@ -261,7 +261,7 @@ sub _send_announce {
     $feedmeta->{hasrun} = 1;
     $handler->init_headlines_seen(1);
     ## for some reason init_headlines_seen sometimes fails ...
-    () = $handler->late_breaking_news;
+    $handler->late_breaking_news;
     return
   }
 
@@ -383,7 +383,7 @@ tool C<cobalt2-plugin-installcf>:
   $ cobalt2-plugin-installcf --plugin="Bot::Cobalt::Plugin::RSS" \
       --dest="cobalt2/etc/plugins/rss.conf"
 
-If you'd rather write one manually, t might look something like this:
+If you'd rather write one manually, it might look something like this:
 
   ---
   ## example etc/plugins/rss.conf
@@ -398,13 +398,11 @@ If you'd rather write one manually, t might look something like this:
           - '#eris'
           - '#otw'
 
-        ParadoxIRC:
+        AlphaChat:
           - '#perl'
 
 =head1 AUTHOR
 
 Jon Portnoy <avenj@cobaltirc.org>
-
-L<http://www.cobaltirc.org>
 
 =cut

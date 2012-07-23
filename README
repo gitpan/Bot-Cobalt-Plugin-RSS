@@ -20,12 +20,12 @@ DESCRIPTION
 
 EXAMPLE CONF
     An example configuration file can be installed via the Bot::Cobalt tool
-    `cobalt2-plugin-installcf':
+    "cobalt2-plugin-installcf":
 
       $ cobalt2-plugin-installcf --plugin="Bot::Cobalt::Plugin::RSS" \
           --dest="cobalt2/etc/plugins/rss.conf"
 
-    If you'd rather write one manually, t might look something like this:
+    If you'd rather write one manually, it might look something like this:
 
       ---
       ## example etc/plugins/rss.conf
@@ -40,11 +40,9 @@ EXAMPLE CONF
               - '#eris'
               - '#otw'
 
-            ParadoxIRC:
+            AlphaChat:
               - '#perl'
 
 AUTHOR
     Jon Portnoy <avenj@cobaltirc.org>
-
-    http://www.cobaltirc.org
 
